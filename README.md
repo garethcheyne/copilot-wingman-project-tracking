@@ -30,7 +30,9 @@ The VS Code extension intercepts Copilot API traffic, counts tokens, calculates 
 
 See [extension/README.md](extension/README.md) for full settings, commands, and configuration.
 
-## Backends
+## Backends (Coming Soon)
+
+> **Work in Progress** — backend services are under active development and not yet available.
 
 Optional backends for aggregating usage data from multiple users/projects into a central database for reporting.
 
@@ -38,9 +40,7 @@ Optional backends for aggregating usage data from multiple users/projects into a
 
 Azure Functions + Cosmos DB with Entra ID authentication. Serverless — scales to zero, pay-per-use.
 
-See [backends/azure-cosmos/README.md](backends/azure-cosmos/README.md) for setup instructions.
-
-### Docker (Coming Soon)
+### Docker
 
 Self-hosted option with PostgreSQL for teams that prefer on-premise.
 
