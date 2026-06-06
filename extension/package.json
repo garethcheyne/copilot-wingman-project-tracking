@@ -2,7 +2,7 @@
   "name": "wingman-copilot-tracking",
   "displayName": "Wingman - Copilot Project Tracking",
   "description": "Track GitHub Copilot token usage per VS Code project",
-  "version": "1.0.1",
+  "version": "2026.06.2",
   "publisher": "garethcheyne",
   "repository": {
     "type": "git",
