@@ -1,0 +1,10 @@
+node_modules/
+dist/
+out/
+*.vsix
+.vscode/copilot-usage*.json
+.vscode/copilot-telemetry*.json
+local.settings.json
+.fallow/
+backends/
+test-workspace/

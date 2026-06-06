@@ -1,0 +1,142 @@
+{
+  "name": "wingman-copilot-tracking",
+  "displayName": "Wingman - Copilot Project Tracking",
+  "description": "Track GitHub Copilot token usage per VS Code project",
+  "version": "1.0.1",
+  "publisher": "garethcheyne",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/garethcheyne/copilot-wingman-project-tracking"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "icon": "resources/wingman-ai.png",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "wingman.showPanel",
+        "title": "Wingman: Show Panel"
+      },
+      {
+        "command": "wingman.setProject",
+        "title": "Wingman: Set Project"
+      },
+      {
+        "command": "wingman.resetUsage",
+        "title": "Wingman: Reset Usage Data"
+      },
+      {
+        "command": "wingman.exportUsage",
+        "title": "Wingman: Export Usage Data"
+      },
+      {
+        "command": "wingman.submitReport",
+        "title": "Wingman: Submit Report"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "copilot-usage",
+          "title": "Copilot Usage",
+          "icon": "resources/activity-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "copilot-usage": [
+        {
+          "type": "webview",
+          "id": "wingman.panel",
+          "name": "Usage Overview"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Wingman",
+      "properties": {
+        "wingman.project": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Project name for usage tracking.\n\nIf empty, auto-detects from git remote (`org/repo`) or workspace folder name."
+        },
+        "wingman.tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Tags to associate with this workspace's usage data.\n\nExample: `[\"team-platform\", \"sprint-42\", \"feature-auth\"]`"
+        },
+        "wingman.costCenter": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Cost center code for billing/reporting purposes.\n\nThis is included in the payload sent to the reporting server."
+        },
+        "wingman.reportingServer": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "markdownDescription": "URL to POST usage reports to.\n\nExample: `https://usage-api.example.com/api/copilot/report`\n\nThe extension will POST a JSON payload containing project, tags, costCenter, user, githubAccount, summary, and reportedAt. See the extension README for the full payload schema."
+        },
+        "wingman.reportingFrequency": {
+          "type": "string",
+          "default": "manual",
+          "scope": "application",
+          "enum": [
+            "manual",
+            "auto"
+          ],
+          "enumDescriptions": [
+            "Only send reports when you click 'Submit' in the panel",
+            "Automatically POST usage data at the configured interval"
+          ],
+          "markdownDescription": "How often to send reports to the reporting server.\n\n- **manual** — Only when you click the Submit button in the panel\n- **auto** — Automatically at the interval configured in `wingman.reportingInterval`"
+        },
+        "wingman.reportingInterval": {
+          "type": "number",
+          "default": 300,
+          "minimum": 30,
+          "scope": "application",
+          "markdownDescription": "Interval in seconds between automatic reports when frequency is set to `auto`.\n\nDefault: `300` (5 minutes). Minimum: `30`."
+        },
+        "wingman.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable usage tracking"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^8.59.4",
+    "@typescript-eslint/parser": "^8.59.4",
+    "eslint": "^10.4.0",
+    "typescript": "^5.4.0",
+    "typescript-eslint": "^8.59.4",
+    "vitest": "^4.1.6"
+  },
+  "dependencies": {
+    "tiktoken": "^1.0.0"
+  }
+}
