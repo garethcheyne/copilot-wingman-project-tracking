@@ -9,7 +9,11 @@ Track GitHub Copilot AI token usage per VS Code workspace/project. Attribute cos
 
 ## Installation
 
-This extension is **not published to the VS Code Marketplace**. Install it by sideloading the `.vsix` file:
+This extension was built to address a real business need — giving organisations visibility into AI costs at the project level. It is currently distributed as a `.vsix` sideload and is not yet published to the VS Code Marketplace.
+
+If this project proves useful to the wider community and gains enough interest, publishing to the official marketplace is on the roadmap.
+
+**To install:**
 
 1. Download the latest `.vsix` from [GitHub Releases](https://github.com/garethcheyne/copilot-wingman-project-tracking/releases)
 2. In VS Code, open the Command Palette (`Ctrl+Shift+P`) and run **Extensions: Install from VSIX...**
