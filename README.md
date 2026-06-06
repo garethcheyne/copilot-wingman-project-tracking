@@ -1,6 +1,7 @@
 <p align="center">
-  <img src="assets/wingman128.png" alt="Wingman logo" width="128" />
+  <img src="assets/wingman-ai.png" alt="Wingman" width="200" />
 </p>
+
 
 # Copilot Wingman — Project Tracking
 
