@@ -1,18 +1,15 @@
-<p align="center">
-  <img src="resources/wingman-ai.png" alt="Wingman logo" width="128" />
-</p>
-
 # Wingman — Copilot Project Tracking
 
-Track GitHub Copilot token usage per VS Code workspace/project. Provides a real-time activity bar panel showing token consumption by model and request type, with optional reporting to a central server.
+Track GitHub Copilot token usage per VS Code workspace/project. Provides a real-time activity bar panel showing token consumption, AI credits, and model breakdown — with optional reporting to a central server.
 
 ## Features
 
-- **Per-project tracking** — Usage data stored in `.vscode/copilot-usage.json`
-- **Activity bar panel** — Live token counts, model distribution, and request breakdown
-- **GitHub account linking** — Associates usage with your GitHub identity
+- **Per-user tracking** — Usage data stored in `.vscode/copilot-usage-{username}.json`
+- **Activity bar panel** — Live token counts, AI credits, model distribution, and request breakdown
+- **AI credit calculation** — Uses GitHub's model multipliers to calculate actual AI credit consumption
+- **GitHub account linking** — Associates usage with your GitHub/git identity
 - **Reporting server** — POST usage summaries to a central endpoint (manual or automatic)
-- **Workspace metadata** — Tag projects with cost centers, labels, and custom tags
+- **Workspace metadata** — Tag projects with cost centres, labels, and custom tags
 
 ## Settings
 
@@ -31,9 +28,9 @@ Track GitHub Copilot token usage per VS Code workspace/project. Provides a real-
 |---------|---------|-------------|
 | `wingman.project` | `""` | Project name (auto-detects from git remote or folder) |
 | `wingman.tags` | `[]` | Tags for this workspace |
-| `wingman.costCenter` | `""` | Cost center code |
+| `wingman.costCenter` | `""` | Cost centre code |
 
-> Project, tags, and cost center are also editable directly in the Wingman panel and saved to `.vscode/copilot-usage.json`.
+> Project, tags, and cost centre are also editable directly in the Wingman panel and saved to the usage file.
 
 ## Report Payload
 
@@ -45,41 +42,57 @@ When submitting to the reporting server (via button or auto mode), the extension
   "tags": ["team-platform", "sprint-42"],
   "costCenter": "CC-4200",
   "user": "gareth",
-  "githubAccount": "garethcheyne",
   "summary": {
-    "totalPromptTokens": 12450,
-    "totalCompletionTokens": 8320,
+    "totalInputTokens": 12450,
+    "totalOutputTokens": 8320,
+    "totalCachedTokens": 1200,
     "totalTokens": 20770,
+    "totalAiCredits": 45.2,
     "totalRequests": 47,
+    "billableRequests": 42,
+    "billableTokens": 19570,
+    "nonBillableTokens": 1200,
     "byModel": {
       "gpt-4o": {
-        "promptTokens": 9800,
-        "completionTokens": 6500,
+        "inputTokens": 9800,
+        "outputTokens": 6500,
+        "cachedTokens": 800,
+        "aiCredits": 32.1,
         "requests": 32
       },
       "claude-sonnet-4-20250514": {
-        "promptTokens": 2650,
-        "completionTokens": 1820,
+        "inputTokens": 2650,
+        "outputTokens": 1820,
+        "cachedTokens": 400,
+        "aiCredits": 13.1,
         "requests": 15
       }
     },
     "byDay": {
       "2026-05-19": {
-        "promptTokens": 12450,
-        "completionTokens": 8320,
+        "inputTokens": 12450,
+        "outputTokens": 8320,
+        "cachedTokens": 1200,
+        "aiCredits": 45.2,
         "requests": 47
       }
     },
     "byType": {
       "chat": {
-        "promptTokens": 10200,
-        "completionTokens": 7100,
-        "requests": 35
+        "inputTokens": 10200,
+        "outputTokens": 7100,
+        "cachedTokens": 900,
+        "aiCredits": 38.0,
+        "requests": 35,
+        "billable": true
       },
-      "completions": {
-        "promptTokens": 2250,
-        "completionTokens": 1220,
-        "requests": 12
+      "inline": {
+        "inputTokens": 2250,
+        "outputTokens": 1220,
+        "cachedTokens": 300,
+        "aiCredits": 7.2,
+        "requests": 12,
+        "billable": true
       }
     }
   },
@@ -99,4 +112,4 @@ When submitting to the reporting server (via button or auto mode), the extension
 
 ## Data Storage
 
-Usage data is stored at `.vscode/copilot-usage.json` in your workspace root. This file is safe to commit or gitignore depending on your preference.
+Usage data is stored per-user at `.vscode/copilot-usage-{username}.json` in your workspace root (username derived from `git config user.name`). This file is safe to commit for shared visibility or gitignore for privacy.
