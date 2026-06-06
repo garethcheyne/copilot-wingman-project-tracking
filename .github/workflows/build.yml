@@ -23,7 +23,7 @@ jobs:
           cache: npm
           cache-dependency-path: extension/package-lock.json
 
-      - run: npm ci
+      - run: rm -rf node_modules && npm install
 
       - run: npm run lint
 
