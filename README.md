@@ -57,6 +57,15 @@ Usage files are named by git username: `.vscode/copilot-usage-gareth-cheyne.json
 
 This means multiple developers on the same repo each get their own file — safe to commit for shared visibility, or gitignore for privacy.
 
+## Part of the Copilot Wingman Family
+
+This project is part of the **Copilot Wingman** family — a suite of tools that extend GitHub Copilot beyond the editor.
+
+| Project | Description |
+|---------|-------------|
+| [Copilot Wingman](https://github.com/garethcheyne/copilot-wingman) | Self-hosted AI proxy & chat UI powered by your GitHub Copilot subscription |
+| **Copilot Wingman Project Tracking** (this repo) | VS Code extension for per-user, per-project AI token usage tracking and cost attribution |
+
 ## License
 
 MIT
