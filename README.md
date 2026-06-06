@@ -7,16 +7,6 @@
 
 Track GitHub Copilot AI token usage per VS Code workspace/project. Attribute costs to users, projects, and cost centers with a real-time activity bar panel.
 
-## Repository Structure
-
-```
-extension/          VS Code extension (published to marketplace)
-backends/           Backend API options for central reporting
-  azure-cosmos/     Azure Functions + Cosmos DB (serverless)
-  docker/           Docker-based self-hosted (coming soon)
-assets/             Shared branding and icons
-```
-
 ## Extension
 
 The VS Code extension intercepts Copilot API traffic, counts tokens, calculates AI credits using GitHub's model multipliers, and stores usage locally per-user.

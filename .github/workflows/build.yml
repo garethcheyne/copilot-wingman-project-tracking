@@ -1,9 +1,8 @@
-name: Build & Package Extension
+name: Build & Test Extension
 
 on:
   push:
     branches: [main]
-    tags: ['v*']
   pull_request:
     branches: [main]
 
@@ -36,18 +35,3 @@ jobs:
         with:
           name: wingman-vsix
           path: extension/*.vsix
-
-  release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: wingman-vsix
-
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: '*.vsix'
