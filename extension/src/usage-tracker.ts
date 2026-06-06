@@ -178,12 +178,42 @@ export class UsageTracker {
             needsMigration = true;
           }
           entry.cachedTokens = entry.cachedTokens || 0;
-          entry.aiCredits = entry.aiCredits || 0;
           if (entry.billable === undefined) entry.billable = true;
         }
       }
 
-      raw.summary = s;
+      // Recalculate aiCredits and fix billable flags for all entries, then rebuild summary
+      let needsRecalc = false;
+      if (raw.entries) {
+        for (const entry of raw.entries) {
+          // Fix billable: inline requests (NES, ghostText, completions) should not be billable
+          if (entry.requestType === 'inline' && entry.billable !== false) {
+            entry.billable = false;
+            needsRecalc = true;
+          }
+          // Recalculate aiCredits if missing or zero on billable entries with tokens
+          const expectedCredits = calculateAiCredits(
+            entry.model || 'unknown',
+            entry.inputTokens || 0,
+            entry.outputTokens || 0,
+            entry.cachedTokens || 0,
+            entry.billable
+          );
+          if (Math.abs((entry.aiCredits || 0) - expectedCredits) > 0.001) {
+            entry.aiCredits = expectedCredits;
+            needsRecalc = true;
+          }
+        }
+      }
+
+      if (needsRecalc) {
+        needsMigration = true;
+        // Rebuild summary from scratch for accuracy
+        raw.summary = this.rebuildSummary(raw.entries || []);
+      } else {
+        raw.summary = s;
+      }
+
       this.data = raw as UsageData;
 
       // Persist migrated data and remove old file
@@ -228,6 +258,77 @@ export class UsageTracker {
         byType: {},
       },
     };
+  }
+
+  private rebuildSummary(entries: UsageEntry[]): UsageSummary {
+    const summary: UsageSummary = {
+      totalInputTokens: 0,
+      totalOutputTokens: 0,
+      totalCachedTokens: 0,
+      totalTokens: 0,
+      totalAiCredits: 0,
+      totalRequests: 0,
+      billableRequests: 0,
+      billableTokens: 0,
+      nonBillableTokens: 0,
+      byModel: {},
+      byDay: {},
+      byType: {},
+    };
+
+    for (const entry of entries) {
+      const totalTokens = (entry.inputTokens || 0) + (entry.outputTokens || 0) + (entry.cachedTokens || 0);
+
+      summary.totalInputTokens += entry.inputTokens || 0;
+      summary.totalOutputTokens += entry.outputTokens || 0;
+      summary.totalCachedTokens += entry.cachedTokens || 0;
+      summary.totalTokens += totalTokens;
+      summary.totalAiCredits += entry.aiCredits || 0;
+      summary.totalRequests += 1;
+
+      if (entry.billable) {
+        summary.billableRequests += 1;
+        summary.billableTokens += totalTokens;
+      } else {
+        summary.nonBillableTokens += totalTokens;
+      }
+
+      // By model
+      if (!summary.byModel[entry.model]) {
+        summary.byModel[entry.model] = { inputTokens: 0, outputTokens: 0, cachedTokens: 0, aiCredits: 0, requests: 0 };
+      }
+      summary.byModel[entry.model].inputTokens += entry.inputTokens || 0;
+      summary.byModel[entry.model].outputTokens += entry.outputTokens || 0;
+      summary.byModel[entry.model].cachedTokens += entry.cachedTokens || 0;
+      summary.byModel[entry.model].aiCredits += entry.aiCredits || 0;
+      summary.byModel[entry.model].requests += 1;
+
+      // By type
+      if (!summary.byType[entry.requestType]) {
+        summary.byType[entry.requestType] = { inputTokens: 0, outputTokens: 0, cachedTokens: 0, aiCredits: 0, requests: 0, billable: entry.billable };
+      }
+      summary.byType[entry.requestType].billable = entry.billable;
+      summary.byType[entry.requestType].inputTokens += entry.inputTokens || 0;
+      summary.byType[entry.requestType].outputTokens += entry.outputTokens || 0;
+      summary.byType[entry.requestType].cachedTokens += entry.cachedTokens || 0;
+      summary.byType[entry.requestType].aiCredits += entry.aiCredits || 0;
+      summary.byType[entry.requestType].requests += 1;
+
+      // By day
+      const day = (entry.timestamp || '').slice(0, 10);
+      if (day) {
+        if (!summary.byDay[day]) {
+          summary.byDay[day] = { inputTokens: 0, outputTokens: 0, cachedTokens: 0, aiCredits: 0, requests: 0 };
+        }
+        summary.byDay[day].inputTokens += entry.inputTokens || 0;
+        summary.byDay[day].outputTokens += entry.outputTokens || 0;
+        summary.byDay[day].cachedTokens += entry.cachedTokens || 0;
+        summary.byDay[day].aiCredits += entry.aiCredits || 0;
+        summary.byDay[day].requests += 1;
+      }
+    }
+
+    return summary;
   }
 
   private getUser(): string {
@@ -301,6 +402,8 @@ export class UsageTracker {
     if (!data.summary.byType[fullEntry.requestType]) {
       data.summary.byType[fullEntry.requestType] = { inputTokens: 0, outputTokens: 0, cachedTokens: 0, aiCredits: 0, requests: 0, billable: fullEntry.billable };
     }
+    // Always update billable to reflect current classification logic
+    data.summary.byType[fullEntry.requestType].billable = fullEntry.billable;
     data.summary.byType[fullEntry.requestType].inputTokens += fullEntry.inputTokens;
     data.summary.byType[fullEntry.requestType].outputTokens += fullEntry.outputTokens;
     data.summary.byType[fullEntry.requestType].cachedTokens += fullEntry.cachedTokens;

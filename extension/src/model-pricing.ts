@@ -25,6 +25,7 @@ export const MODEL_PRICING: Record<string, ModelPricing> = {
   // OpenAI — multipliers from GitHub Language Models picker
   'gpt-4.1': { inputPerMillion: 2.00, cachedPerMillion: 0.50, outputPerMillion: 8.00, multiplier: 0 },
   'gpt-4o': { inputPerMillion: 2.00, cachedPerMillion: 0.50, outputPerMillion: 8.00, multiplier: 0 },
+  'gpt-4o-mini': { inputPerMillion: 0.15, cachedPerMillion: 0.075, outputPerMillion: 0.60, multiplier: 0 },
   'gpt-5-mini': { inputPerMillion: 0.25, cachedPerMillion: 0.025, outputPerMillion: 2.00, multiplier: 0 },
   'gpt-5.2': { inputPerMillion: 1.75, cachedPerMillion: 0.175, outputPerMillion: 14.00, multiplier: 1 },
   'gpt-5.2-codex': { inputPerMillion: 1.75, cachedPerMillion: 0.175, outputPerMillion: 14.00, multiplier: 1 },
@@ -46,12 +47,15 @@ export const MODEL_PRICING: Record<string, ModelPricing> = {
   // Google
   'gemini-2.5-pro': { inputPerMillion: 1.25, cachedPerMillion: 0.125, outputPerMillion: 10.00, multiplier: 1 },
   'gemini-3-flash': { inputPerMillion: 0.50, cachedPerMillion: 0.05, outputPerMillion: 3.00, multiplier: 0.33 },
+  'gemini-3-flash-preview': { inputPerMillion: 0.50, cachedPerMillion: 0.05, outputPerMillion: 3.00, multiplier: 0.33 },
   'gemini-3.1-pro': { inputPerMillion: 2.00, cachedPerMillion: 0.20, outputPerMillion: 12.00, multiplier: 1 },
   'gemini-3.5-flash': { inputPerMillion: 1.50, cachedPerMillion: 0.15, outputPerMillion: 9.00, multiplier: 1 },
 
-  // GitHub fine-tuned
+  // GitHub fine-tuned / internal Copilot models
   'raptor-mini': { inputPerMillion: 0.25, cachedPerMillion: 0.025, outputPerMillion: 2.00, multiplier: 0 },
   'goldeneye': { inputPerMillion: 1.25, cachedPerMillion: 0.125, outputPerMillion: 10.00, multiplier: 1 },
+  'copilot-nes-oct': { inputPerMillion: 0, cachedPerMillion: 0, outputPerMillion: 0, multiplier: 0 },
+  'copilot-suggestions-himalia-001': { inputPerMillion: 0, cachedPerMillion: 0, outputPerMillion: 0, multiplier: 0 },
 };
 
 // Default pricing for unknown models (uses GPT-5 mini rates as conservative estimate)
